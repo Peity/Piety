@@ -11,32 +11,43 @@ datasource db {
 }
 
 model Player {
-  id        Int       @id @default(autoincrement())
-  username  String    @unique
-  email     String    @unique
-  password  String
-  created_at DateTime  @default(now())
-  clan      Clan?
+  id              Int             @id @default(autoincrement())
+  username        String          @unique
+  email           String          @unique
+  password        String
+  created_at      DateTime        @default(now())
+  clan            Clan?
 }
 
 model Clan {
-  id        Int       @id @default(autoincrement())
-  owner     Player    @relation(fields: [owner_id], references: [id])
-  owner_id  Int
-  name      String    @unique
-  slug      String    @unique
-  gold      Int
-  supply    Int
-  level     Float
-  members   Member[]
+  id              Int             @id @default(autoincrement())
+  owner           Player          @relation(fields: [owner_id], references: [id])
+  owner_id        Int
+  name            String          @unique
+  slug            String          @unique
+  gold            Int
+  supply          Int
+  level           Float
+  members         Member[]
 }
 
 model Member {
-  id        Int       @id
-  Clan      Clan      @relation(fields: [clan_id], references: [id])
-  clan_id   Int
-  type      Int
-  hired_at  DateTime  @default(now())
-  state     Int       @default(0)
-  revenue   Int
+  id              Int             @id
+  Clan            Clan            @relation(fields: [clan_id], references: [id])
+  clan_id         Int
+  type            Int
+  hired_at        DateTime        @default(now())
+  state           Int             @default(0)
+  revenue         Int
+  task            Task?
+}
+
+model Task {
+  id              Int             @id
+  member          Member          @relation(fields: [member_id], references: [id])
+  member_id       Int
+  type            Int
+  start_time      DateTime        @default(now())
+  loot            Json
+  
 }
