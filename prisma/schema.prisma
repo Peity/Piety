@@ -39,23 +39,43 @@ model Member {
   type            Int
   hired_at        DateTime        @default(now())
   state           Int             @default(0)
+  life_status     Boolean         @default(true)
   revenue         Int
-  task            Task?
+  Mining          Miner?
+  Exploring       Explorer?
 }
 
-model Task {
+model Miner {
   id              Int             @id @default(autoincrement())
   member          Member          @relation(fields: [member_id], references: [id])
   member_id       Int
-  type            Int
   start_time      DateTime        @default(now())
 }
 
-model Expedition{
+model Explorer {
+  id              Int             @id @default(autoincrement())
+  member          Member          @relation(fields: [member_id], references: [id])
+  member_id       Int
+  Expedition      Expedition      @relation(fields: [expedition_id], references: [id])
+  expedition_id   Int
+}
+
+model Expedition {
   id              Int             @id @default(autoincrement())
   title           String          @db.VarChar(20)
   difficulty      Int
   min_req         Int
   chance          Int
   loot            Json
+  explorers       Explorer[]
+}
+
+model MemberTypeTranslation {
+  id              Int              @id @default(autoincrement())
+  translation     String
+}
+
+model MemberStateTranslation {
+  id              Int               @id @default(autoincrement())
+  translation     String
 }
