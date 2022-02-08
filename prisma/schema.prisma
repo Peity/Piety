@@ -32,9 +32,10 @@ model Clan {
 }
 
 model Member {
-  id              Int             @id
+  id              Int             @id @default(autoincrement())
   Clan            Clan            @relation(fields: [clan_id], references: [id])
   clan_id         Int
+  name            String          @db.VarChar(20)
   type            Int
   hired_at        DateTime        @default(now())
   state           Int             @default(0)
@@ -43,11 +44,18 @@ model Member {
 }
 
 model Task {
-  id              Int             @id
+  id              Int             @id @default(autoincrement())
   member          Member          @relation(fields: [member_id], references: [id])
   member_id       Int
   type            Int
   start_time      DateTime        @default(now())
+}
+
+model Expedition{
+  id              Int             @id @default(autoincrement())
+  title           String          @db.VarChar(20)
+  difficulty      Int
+  min_req         Int
+  chance          Int
   loot            Json
-  
 }
