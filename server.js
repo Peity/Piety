@@ -1,3 +1,4 @@
+const { PrismaClient } =  require('@prisma/client')
 const express = require('express')
 const app = express()
 const port = 3010
@@ -9,9 +10,14 @@ app.get('/', (req, res) => {
     res.render('index', { text: "World" })
 })
 
+app.use('/', require('./routers/login'))
+
 app.listen(port)
 
 
-const { PrismaClient } =  require('@prisma/client')
+
 const prisma = new PrismaClient()
+
+exports.prisma = prisma
+
 
