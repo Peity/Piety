@@ -3,7 +3,7 @@ import * as core from 'express-serve-static-core';
 import PlayerController from '../controllers/PlayerController'
 
 export class Api{
-    router: core.Router
+    router: core.Router;
 
     constructor(){
         this.router = express.Router();
@@ -20,7 +20,7 @@ export class Api{
         this.router.get('/player/:username', (req, res) => {
             const playerController = new PlayerController();
             playerController.show('Hello', res);
-        })
+        });
     }
    
 }
