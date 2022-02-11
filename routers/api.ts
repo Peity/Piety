@@ -19,8 +19,20 @@ export class Api{
 
         this.router.get('/player/:username', (req, res) => {
             const playerController = new PlayerController();
+<<<<<<< HEAD
+            playerController.show('Hello', res).then(
+                function (result){
+                    res.json(result);
+                },
+                function(error){
+                    res.status(400);
+                }
+            );
+        })
+=======
             playerController.show('Hello', res);
         });
+>>>>>>> 42c2fc4a56034bffeff20018b5b3036f1bc34a29
     }
    
 }
