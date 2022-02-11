@@ -2,10 +2,10 @@ import express from 'express';
 import * as core from 'express-serve-static-core';
 import PlayerController from '../controllers/PlayerController'
 
-export class Api{
+export class Api {
     router: core.Router;
 
-    constructor(){
+    constructor() {
         this.router = express.Router();
         console.log('Router initiated');
         this.initRoutes();
@@ -17,19 +17,13 @@ export class Api{
             res.sendStatus(200);
         });
 
-        this.router.get('/player/:username', (req, res) => {
+        this.router.get('/player/:username', async (req, res) => {
             const playerController = new PlayerController();
             const username = req.params.username
 
-            playerController.show(username, res).then(
-                function (result){
-                    res.json(result);
-                },
-                function(error){
-                    res.status(400);
-                }
-            );
+            const result = await playerController.show(username, res);
+            res.send(result);
         })
     }
-   
+
 }

@@ -1,8 +1,6 @@
-import { Player, prisma, PrismaClient } from "@prisma/client";
+import {PrismaClient} from '@prisma/client'
 import Controller from "../controllers/Controller";
-import {body, validationResult } from 'express-validator';
 import express from 'express';
-import { ParamsDictionary } from "express-serve-static-core";
 
 export default class PlayerCotroller implements Controller {
 
@@ -10,7 +8,7 @@ export default class PlayerCotroller implements Controller {
         throw new Error("Method not implemented.");
     }
 
-    public async show(username: string, res: express.Response): Promise<JSON> {
+    public async show(username: string, res: express.Response): Promise<any> {
         var result: any;
         const prismaClient = new PrismaClient();
         prismaClient.$connect();
@@ -20,14 +18,13 @@ export default class PlayerCotroller implements Controller {
             }
         });
 
-        return JSON.parse(result);
-        
+        return result;
+
     }
 
     create(req: express.Request, res: express.Response): express.Response {
         throw new Error("Method not implemented.");
     }
-    
 
 
 }
