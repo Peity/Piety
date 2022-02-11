@@ -6,7 +6,6 @@ const app = express();
 const port = 3000;
 
 let api = new Api();
-// api.setRoutes();
 
 app.use('/', api.router)
 app.listen(port, () => {
