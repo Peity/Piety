@@ -23,7 +23,13 @@ export class Api {
 
             const result = await playerController.show(username, res);
             res.send(result);
-        })
+        });
+
+        this.router.post('/player', async (req, res) => {
+            const playerController = new PlayerController();
+            const result = await playerController.create(req, res);
+            res.send(result);
+        });
     }
 
 }
