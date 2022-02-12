@@ -12,5 +12,5 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', api.router);
 app.listen(port, () => {
-  console.log(`server is running on http://localhost:3000`);
+  console.log('server is running on http://localhost:'+port);
 });
