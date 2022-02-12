@@ -2,9 +2,14 @@ import {PrismaClient} from '@prisma/client'
 import Controller from "../controllers/Controller";
 import express from 'express';
 
-export default class PlayerCotroller implements Controller {
-    index(): JSON {
-        throw new Error("Method not implemented.");
+export default class PlayerController implements Controller {
+    public async index(req: express.Request, res: express.Response): Promise<JSON> {
+        let result: any;
+        const prismaClient = new PrismaClient();
+        prismaClient.$connect();
+        result = await prismaClient.player.findMany();
+        prismaClient.$disconnect();
+        return result;
     }
 
     public async show(username: string, res: express.Response): Promise<any> {

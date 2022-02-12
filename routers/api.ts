@@ -26,6 +26,13 @@ export class Api {
             res.send(result);
         });
 
+        this.router.get('/players', async (req, res) => {
+            const playerController = new PlayerController();
+
+            const result = await playerController.index(req, res);
+            res.send(result);
+        });
+
         this.router.post(
             '/player',
             body('username').not().isEmpty().trim().escape(),
@@ -43,5 +50,4 @@ export class Api {
             }
         );
     }
-
 }
