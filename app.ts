@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { Api } from './routers/api';
-const bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
 
 
 const app = express();
