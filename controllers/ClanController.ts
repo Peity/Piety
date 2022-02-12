@@ -37,7 +37,6 @@ export default class ClanController implements Controller{
      */
     public async create(req: express.Request, res: express.Response): Promise<Response> {
         let result: any;
-        let owner: any;
         const prismaClient = new PrismaClient();
         prismaClient.$connect();
         result = await prismaClient.clan.create({
