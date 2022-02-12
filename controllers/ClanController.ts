@@ -26,8 +26,20 @@ class ClanController implements Controller{
         return result;
     }
 
-    delete(id: any, res: express.Response): Promise<Response> {
-        return Promise.resolve(undefined);
+    public async delete(slug: string, res: express.Response): Promise<Response> {
+        
+        //Control for clan owner
+
+        let result: any;
+        slugify(slug);
+        const prismaClient = new PrismaClient();
+        prismaClient.$connect();
+        result = await prismaClient.clan.delete({
+            where:{
+                slug: slug
+            }
+        })
+        return result;
     }
 
     public async show(slug: string, res: express.Response): Promise<Response> {
