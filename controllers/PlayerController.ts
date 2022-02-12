@@ -1,6 +1,8 @@
 import {PrismaClient} from '@prisma/client'
 import Controller from "../controllers/Controller";
 import express from 'express';
+import bcrypt from 'bcrypt';
+import { env } from 'process';
 
 export default class PlayerController implements Controller {
     public async index(req: express.Request, res: express.Response): Promise<Response> {
@@ -40,12 +42,14 @@ export default class PlayerController implements Controller {
         let result: any;
         const prismaClient = new PrismaClient();
         prismaClient.$connect();
-        result = await prismaClient.player.create({
-            data: {
-                username: req.body.username,
-                email: req.body.email,
-                password: req.body.password
-            }
+        await bcrypt.hash(req.body.password, +process.env.SECRET_ROUNDS).then(function(hash) {
+            result = prismaClient.player.create({
+                data: {
+                    username: req.body.username,
+                    email: req.body.email,
+                    password: hash
+                }
+            });
         });
         prismaClient.$disconnect();
         return result;
