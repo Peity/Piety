@@ -22,7 +22,7 @@ model Player {
 model Clan {
   id              Int             @id @default(autoincrement())
   owner           Player          @relation(fields: [owner_id], references: [id])
-  owner_id        Int
+  owner_id        Int             @unique
   name            String          @unique
   slug            String          @unique
   gold            Int

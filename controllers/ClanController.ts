@@ -41,7 +41,7 @@ export default class ClanController implements Controller{
         prismaClient.$connect();
         result = await prismaClient.clan.create({
             data: {
-                owner_id: req.body.owner_id,
+                owner: req.body.owner_id,
                 name: req.body.name,
                 slug: req.body.slug,
                 gold: 1000,
