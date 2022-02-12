@@ -3,11 +3,22 @@ import Controller from "../controllers/Controller";
 import express from 'express';
 
 export default class PlayerController implements Controller {
-    public async index(req: express.Request, res: express.Response): Promise<JSON> {
+    public async index(req: express.Request, res: express.Response): Promise<Response> {
         let result: any;
         const prismaClient = new PrismaClient();
+        let count: number = +req.query.count;
+        let offset: number = +req.query.offset;
+
         prismaClient.$connect();
-        result = await prismaClient.player.findMany();
+
+        if(!count && !offset) {
+            result = await prismaClient.player.findMany();
+        } else {
+            result = await prismaClient.player.findMany({
+                skip: (offset-1)*count,
+                take: count,
+            });
+        }
         prismaClient.$disconnect();
         return result;
     }
@@ -38,5 +49,13 @@ export default class PlayerController implements Controller {
         });
         prismaClient.$disconnect();
         return result;
+    }
+
+    update(id: any, req: express.Request, res: express.Response<any, Record<string, any>>): Promise<Response> {
+        throw new Error('Method not implemented.');
+    }
+
+    delete(id: any, res: express.Response<any, Record<string, any>>): Promise<Response> {
+        throw new Error('Method not implemented.');
     }
 }
