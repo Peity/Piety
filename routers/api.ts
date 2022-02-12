@@ -1,6 +1,7 @@
 import express from 'express';
 import * as core from 'express-serve-static-core';
 import PlayerController from '../controllers/PlayerController';
+import ClanController from '../controllers/ClanController';
 import {body, validationResult} from 'express-validator';
 
 export class Api {
@@ -18,6 +19,11 @@ export class Api {
             res.sendStatus(200);
         });
 
+        /*
+        ---------------------------------------------------------
+                            Player Routes
+        ---------------------------------------------------------
+         */
         this.router.get('/player/:username', async (req, res) => {
             const playerController = new PlayerController();
             const username = req.params.username
@@ -49,5 +55,17 @@ export class Api {
                 res.send(result);
             }
         );
+
+        /*
+        ---------------------------------------------------------
+                            Clan Routes
+        ---------------------------------------------------------
+         */
+        this.router.get('clan/:slug', async (req, res) => {
+            const clanController = new ClanController();
+            const clanSlug = req.params.slug;
+            const result = await clanController.show(clanSlug, res);
+            res.send(result);
+        });
     }
 }

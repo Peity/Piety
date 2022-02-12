@@ -3,7 +3,7 @@ import Controller from "../controllers/Controller";
 import express from 'express';
 import slugify from 'slugify';
 
-class ClanController implements Controller{
+export default class ClanController implements Controller{
 
     /**
      *
@@ -94,7 +94,7 @@ class ClanController implements Controller{
     }
 
     /**
-     * 
+     *
      * @param id
      * @param req
      * @param res
