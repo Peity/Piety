@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {PrismaClient, Prisma} from '@prisma/client'
 import Controller from "../controllers/Controller";
 import express from 'express';
 import slugify from 'slugify';
@@ -37,24 +37,31 @@ export default class ClanController implements Controller{
      */
     public async create(req: express.Request, res: express.Response): Promise<Response> {
         let result: any;
-        const prismaClient = new PrismaClient();
-        prismaClient.$connect();
-        result = await prismaClient.clan.create({
-            data: {
-                owner: {
-                    connect: {
-                        id: +req.body.owner_id
-                    },  
-                },
-                name: req.body.name,
-                slug: req.body.slug,
-                gold: 1000,
-                supply: 1000,
-                level: 0.0  
-            }
+        const prismaClient = new PrismaClient({
+            errorFormat: 'minimal'
         });
-        prismaClient.$disconnect();
-        return result;
+        prismaClient.$connect();
+        try {
+            result = await prismaClient.clan.create({
+                data: {
+                    owner: {
+                        connect: {
+                            id: +req.body.owner_id
+                        },
+                    },
+                    name: req.body.name,
+                    slug: req.body.slug,
+                    gold: 1000,
+                    supply: 1000,
+                    level: 0.0
+                }
+            });
+            prismaClient.$disconnect();
+            return result;
+        }catch (e) {
+            return e.message;
+        }
+
     }
 
     /**

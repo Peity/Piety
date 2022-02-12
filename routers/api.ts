@@ -49,14 +49,18 @@ export class Api {
             body('email').isEmail(),
             body('password').isLength({min: 6}),
             async (req, res) => {
-                const errors = validationResult(req);
-                if (!errors.isEmpty()) {
-                    return res.status(400).json({errors: errors.array()});
-                }
+                try {
+                    const errors = validationResult(req);
+                    if (!errors.isEmpty()) {
+                        return res.status(400).json({errors: errors.array()});
+                    }
 
-                const playerController = new PlayerController();
-                const result = await playerController.create(req, res);
-                res.send(result);
+                    const playerController = new PlayerController();
+                    const result = await playerController.create(req, res);
+                    res.send(result);
+                } catch (e) {
+                    res.send(e.message);
+                }
             }
         );
 
