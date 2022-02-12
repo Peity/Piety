@@ -24,6 +24,8 @@ export class Api {
                             Player Routes
         ---------------------------------------------------------
          */
+
+        //Show Players
         this.router.get('/player/:username', async (req, res) => {
             const playerController = new PlayerController();
             const username = req.params.username
@@ -32,6 +34,7 @@ export class Api {
             res.send(result);
         });
 
+        //Index Players
         this.router.get('/players', async (req, res) => {
             const playerController = new PlayerController();
 
@@ -39,15 +42,16 @@ export class Api {
             res.send(result);
         });
 
+        //Crate Player
         this.router.post(
-            '/player',
+            '/player/create',
             body('username').not().isEmpty().trim().escape(),
             body('email').isEmail(),
-            body('password').isLength({ min: 6 }),
+            body('password').isLength({min: 6}),
             async (req, res) => {
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
-                    return res.status(400).json({ errors: errors.array() });
+                    return res.status(400).json({errors: errors.array()});
                 }
 
                 const playerController = new PlayerController();
@@ -61,11 +65,30 @@ export class Api {
                             Clan Routes
         ---------------------------------------------------------
          */
-        this.router.get('clan/:slug', async (req, res) => {
+
+        //Show Clan
+        this.router.get('/clan/:slug', async (req, res) => {
             const clanController = new ClanController();
             const clanSlug = req.params.slug;
             const result = await clanController.show(clanSlug, res);
             res.send(result);
         });
+
+        //Create Clan
+        this.router.post(
+            '/clan/create',
+            body('owner_id').not().isEmpty(),
+            body('name').not().isEmpty(),
+            body('slug').not().isEmpty(),
+            async (req, res) => {
+                const errors = validationResult(req);
+                if (! errors.isEmpty()){
+                    return res.status(400).send(errors.array());
+                }
+
+                const clanController = new ClanController();
+                const result = await clanController.create(req, res);
+                res.send(result);
+            });
     }
 }
