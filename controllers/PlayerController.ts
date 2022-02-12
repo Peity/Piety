@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import { env } from 'process';
 
 export default class PlayerController implements Controller {
-    public async index(req: express.Request, res: express.Response): Promise<Response> {
+    public async index(req: express.Request, res: express.Response): Promise<any> {
         let result: any;
         const prismaClient = new PrismaClient();
         let count: number = +req.query.count;
@@ -22,7 +22,7 @@ export default class PlayerController implements Controller {
             });
         }
         prismaClient.$disconnect();
-        return result;
+        return res.json(result);
     }
 
     public async show(username: string, res: express.Response): Promise<any> {
@@ -38,8 +38,29 @@ export default class PlayerController implements Controller {
         return result;
     }
 
+    public async getUserByEmail(email: string, res: express.Response): Promise<any> {
+        let result: any;
+        const prismaClient = new PrismaClient();
+        prismaClient.$connect();
+        result = await prismaClient.player.findUnique({
+            where: {
+                email: email
+            }
+        });
+        prismaClient.$disconnect();
+        return result;
+    }
+
     public async create(req: express.Request, res: express.Response): Promise<Response> {
         let result: any;
+        if(this.getUserByEmail(req.body.email, res)) {
+            res.status(400).send('Email must be unique.');
+            return;
+        }
+        else if(this.show(req.body.username, res)) {
+            res.status(400).send('Username must be unique.');
+            return;
+        }
         const prismaClient = new PrismaClient();
         prismaClient.$connect();
         await bcrypt.hash(req.body.password, +process.env.SECRET_ROUNDS).then(function(hash) {
