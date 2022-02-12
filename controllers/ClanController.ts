@@ -5,6 +5,14 @@ import slugify from 'slugify';
 
 export default class ClanController implements Controller{
 
+    prismaClient: PrismaClient;
+
+    constructor() {
+        this.prismaClient = new PrismaClient({
+            errorFormat: 'minimal'
+        });
+    }
+
     /**
      *
      * @param req
@@ -12,21 +20,20 @@ export default class ClanController implements Controller{
      */
     public async index(req: express.Request, res: express.Response): Promise<Response> {
         let result: any;
-        const prismaClient = new PrismaClient();
         let count: number = +req.query.count;
         let offset: number = +req.query.offset;
 
-        prismaClient.$connect();
+        this.prismaClient.$connect();
 
         if(!count && !offset) {
-            result = await prismaClient.clan.findMany();
+            result = await this.prismaClient.clan.findMany();
         } else {
-            result = await prismaClient.clan.findMany({
+            result = await this.prismaClient.clan.findMany({
                 skip: (offset-1)*count,
                 take: count,
             });
         }
-        prismaClient.$disconnect();
+        this.prismaClient.$disconnect();
         return result;
     }
 
@@ -37,12 +44,9 @@ export default class ClanController implements Controller{
      */
     public async create(req: express.Request, res: express.Response): Promise<Response> {
         let result: any;
-        const prismaClient = new PrismaClient({
-            errorFormat: 'minimal'
-        });
-        prismaClient.$connect();
+        this.prismaClient.$connect();
         try {
-            result = await prismaClient.clan.create({
+            result = await this.prismaClient.clan.create({
                 data: {
                     owner: {
                         connect: {
@@ -56,7 +60,7 @@ export default class ClanController implements Controller{
                     level: 0.0
                 }
             });
-            prismaClient.$disconnect();
+            this.prismaClient.$disconnect();
             return result;
         }catch (e) {
             return e.message;
@@ -72,14 +76,13 @@ export default class ClanController implements Controller{
     public async show(slug: string, res: express.Response): Promise<Response> {
         let result: any;
         slugify(slug);
-        const prismaClient = new PrismaClient();
-        prismaClient.$connect();
-        result = await prismaClient.clan.findUnique({
+        this.prismaClient.$connect();
+        result = await this.prismaClient.clan.findUnique({
             where: {
                 slug: slug
             }
         });
-        prismaClient.$disconnect();
+        this.prismaClient.$disconnect();
         return result;
     }
 
@@ -94,9 +97,8 @@ export default class ClanController implements Controller{
 
         let result: any;
         slugify(slug);
-        const prismaClient = new PrismaClient();
-        prismaClient.$connect();
-        result = await prismaClient.clan.delete({
+        this.prismaClient.$connect();
+        result = await this.prismaClient.clan.delete({
             where:{
                 slug: slug
             }
