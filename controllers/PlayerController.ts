@@ -16,6 +16,7 @@ export default class PlayerCotroller implements Controller {
                 username: username
             }
         });
+        prismaClient.$disconnect();
         return result;
     }
 
@@ -30,6 +31,7 @@ export default class PlayerCotroller implements Controller {
                 password: req.body.password
             }
         });
+        prismaClient.$disconnect();
         return result;
     }
 }
