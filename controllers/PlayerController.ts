@@ -48,7 +48,12 @@ export default class PlayerController implements Controller {
                     username: req.body.username,
                     email: req.body.email,
                     password: hash
-                }
+                },
+                select: {
+                    username: true,
+                    email: true,
+                    created_at: true,
+                },
             });
         });
         prismaClient.$disconnect();
