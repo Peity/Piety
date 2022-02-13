@@ -27,7 +27,15 @@ export default class PlayerController implements Controller {
             });
         }
         this.prismaClient.$disconnect();
-        return res.json(result);
+        if (result === null) {
+            const e = `{
+                "message": "404 not found"
+            }`;
+            const json = JSON.parse(e);
+            res.send(json);
+            return;
+        }
+        res.send(result);
     }
 
     public async show(username: string, res: express.Response): Promise<any> {

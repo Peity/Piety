@@ -105,7 +105,7 @@ export default class ClanController implements Controller{
                 "message": "404 not found"
             }`;
             const json = JSON.parse(e);
-            res.send(json);
+            res.status(404).send(json);
             return;
         }
         res.send(result);
