@@ -78,6 +78,14 @@ export class Api {
             res.send(result);
         });
 
+        //Index Clans
+        this.router.get('/clans', async (req, res) => {
+            const clanController = new ClanController();
+
+            const result = await clanController.index(req, res);
+            res.send(result);
+        });
+
         //Create Clan
         this.router.post(
             '/clan/create',
