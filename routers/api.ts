@@ -3,6 +3,7 @@ import * as core from 'express-serve-static-core';
 import PlayerController from '../controllers/PlayerController';
 import ClanController from '../controllers/ClanController';
 import {body, validationResult} from 'express-validator';
+import MemberController from "../controllers/MemberController";
 
 export class Api {
     router: core.Router;
@@ -75,6 +76,14 @@ export class Api {
             await clanController.show(clanSlug, res);
         });
 
+        //Index Players
+        this.router.get('/clan/', async (req, res) => {
+            const clanController = new ClanController();
+
+            const result = await clanController.index(req, res);
+            res.send(result);
+        });
+
         //Create Clan
         this.router.post(
             '/clan/create',
@@ -83,12 +92,35 @@ export class Api {
             body('slug').not().isEmpty(),
             async (req, res) => {
                 const errors = validationResult(req);
-                if (! errors.isEmpty()){
+                if (!errors.isEmpty()) {
                     return res.status(400).send(errors.array());
                 }
 
                 const clanController = new ClanController();
                 await clanController.create(req, res);
             });
+
+        /*
+        ---------------------------------------------------------
+                    Member Routes
+        ---------------------------------------------------------
+        */
+        //Create Member
+        this.router.post(
+            '/member/create',
+            body('clan_id').not().isEmpty(),
+            body('name').not().isEmpty,
+            async (req, res) => {
+                console.log("route /member/create called!");
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                    return res.status(400).send(errors.array());
+                }
+
+                console.log("Validation passed, Calling controller");
+                const memberController = new MemberController();
+                await memberController.create(req, res);
+            }
+        );
     }
 }

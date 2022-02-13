@@ -40,7 +40,7 @@ model Member {
   hired_at        DateTime        @default(now())
   state           Int             @default(0)
   life_status     Boolean         @default(true)
-  revenue         Int
+  revenue         Int             @default(0)
   Mining          Miner?
   Exploring       Explorer?
 }
