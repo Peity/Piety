@@ -2,6 +2,7 @@ import {PrismaClient, Prisma} from '@prisma/client'
 import Controller from "../controllers/Controller";
 import express from 'express';
 import slugify from 'slugify';
+import {body} from "express-validator";
 
 export default class ClanController implements Controller{
 
@@ -18,7 +19,7 @@ export default class ClanController implements Controller{
      * @param req
      * @param res
      */
-    public async index(req: express.Request, res: express.Response): Promise<Response> {
+    public async index(req: express.Request, res: express.Response): Promise<void> {
         let result: any;
         let count: number = +req.query.count;
         let offset: number = +req.query.offset;
@@ -42,8 +43,9 @@ export default class ClanController implements Controller{
      * @param req
      * @param res
      */
-    public async create(req: express.Request, res: express.Response): Promise<Response> {
+    public async create(req: express.Request, res: express.Response): Promise<void> {
         let result: any;
+        const slug = slugify(req.body.slug).toLocaleLowerCase();
         this.prismaClient.$connect();
         try {
             result = await this.prismaClient.clan.create({
@@ -54,16 +56,31 @@ export default class ClanController implements Controller{
                         },
                     },
                     name: req.body.name,
-                    slug: req.body.slug,
+                    slug: slug,
                     gold: 1000,
                     supply: 1000,
                     level: 0.0
                 }
             });
             this.prismaClient.$disconnect();
-            return result;
+            res.send(result);
         }catch (e) {
-            return e.message;
+            if (e.code == "P2014") {
+                const message = `{
+                    "message": "This user already have another clan."
+                }`;
+                const json = JSON.parse(message);
+                res.status(400).send(json);
+                return;
+            }
+            else{
+                const message = `{
+                    "message": "${e.message}"
+                }`;
+                const json = JSON.parse(message);
+                res.status(400).send(json);
+                return;
+            }
         }
 
     }
@@ -73,7 +90,7 @@ export default class ClanController implements Controller{
      * @param slug
      * @param res
      */
-    public async show(slug: string, res: express.Response): Promise<Response> {
+    public async show(slug: string, res: express.Response): Promise<void> {
         let result: any;
         slugify(slug);
         this.prismaClient.$connect();
@@ -83,7 +100,15 @@ export default class ClanController implements Controller{
             }
         });
         this.prismaClient.$disconnect();
-        return result;
+        if(result === null){
+            const e = `{
+                "message": "404 not found"
+            }`;
+            const json = JSON.parse(e);
+            res.send(json);
+            return;
+        }
+        res.send(result);
     }
 
     /**
@@ -91,7 +116,7 @@ export default class ClanController implements Controller{
      * @param slug
      * @param res
      */
-    public async delete(slug: string, res: express.Response): Promise<Response> {
+    public async delete(slug: string, res: express.Response): Promise<void> {
 
         //Control for clan owner
 
@@ -112,7 +137,7 @@ export default class ClanController implements Controller{
      * @param req
      * @param res
      */
-    update(id: any, req: express.Request, res: express.Response): Promise<Response> {
+    update(id: any, req: express.Request, res: express.Response): Promise<void> {
         return Promise.resolve(undefined);
     }
     

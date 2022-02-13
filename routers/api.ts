@@ -29,9 +29,7 @@ export class Api {
         this.router.get('/player/:username', async (req, res) => {
             const playerController = new PlayerController();
             const username = req.params.username
-
-            const result = await playerController.show(username, res);
-            res.send(result);
+            await playerController.show(username, res);
         });
 
         //Index Players
@@ -74,16 +72,7 @@ export class Api {
         this.router.get('/clan/:slug', async (req, res) => {
             const clanController = new ClanController();
             const clanSlug = req.params.slug;
-            const result = await clanController.show(clanSlug, res);
-            res.send(result);
-        });
-
-        //Index Clans
-        this.router.get('/clans', async (req, res) => {
-            const clanController = new ClanController();
-
-            const result = await clanController.index(req, res);
-            res.send(result);
+            await clanController.show(clanSlug, res);
         });
 
         //Create Clan
@@ -99,9 +88,7 @@ export class Api {
                 }
 
                 const clanController = new ClanController();
-                const result = await clanController.create(req, res);
-                res.send(result);
-            }
-        );
+                await clanController.create(req, res);
+            });
     }
 }
