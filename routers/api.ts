@@ -93,6 +93,7 @@ export class Api {
                 const clanController = new ClanController();
                 const result = await clanController.create(req, res);
                 res.send(result);
-            });
+            }
+        );
     }
 }
