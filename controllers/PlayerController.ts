@@ -11,7 +11,7 @@ export default class PlayerController implements Controller {
             errorFormat: 'minimal'
         });
     }
-    public async index(req: express.Request, res: express.Response): Promise<any> {
+    public async index(req: express.Request, res: express.Response): Promise<void> {
         let result: any;
         let count: number = +req.query.count;
         let offset: number = +req.query.offset;
@@ -27,18 +27,17 @@ export default class PlayerController implements Controller {
             });
         }
         this.prismaClient.$disconnect();
-        if (result === null) {
+        if (result.length === 0) {
             const e = `{
-                "message": "404 not found"
+                "message": "no user found"
             }`;
-            const json = JSON.parse(e);
-            res.send(json);
-            return;
+            result = JSON.parse(e);
+            res.status(404);
         }
         res.send(result);
     }
 
-    public async show(username: string, res: express.Response): Promise<any> {
+    public async show(username: string, res: express.Response): Promise<void> {
         let result: any;
         this.prismaClient.$connect();
         result = await this.prismaClient.player.findUnique({
@@ -47,58 +46,60 @@ export default class PlayerController implements Controller {
             }
         });
         this.prismaClient.$disconnect();
-        return result;
+        if(result === null){
+            const e = `{
+                "message": "404 not found"
+            }`;
+            result = JSON.parse(e);
+            res.status(404);
+        }
+        res.send(result);
     }
 
-    public async getUserByEmail(email: string, res: express.Response): Promise<any> {
+    public async create(req: express.Request, res: express.Response): Promise<void> {
         let result: any;
-        this.prismaClient.$connect();
-        result = await this.prismaClient.player.findUnique({
-            where: {
-                email: email
-            }
-        });
-        this.prismaClient.$disconnect();
-        return result;
-    }
-
-    public async create(req: express.Request, res: express.Response): Promise<Response> {
-        let result: any;
-        if(await this.getUserByEmail(req.body.email, res)) {
-            res.status(400).send('Email must be unique.');
-            return;
+        if(await this.prismaClient.player.findUnique({where: {email: req.body.email}})) {
+            const e = `{
+                "message": "Email must be unique"
+            }`;
+            result = JSON.parse(e);
+            res.status(400);
         }
-        else if(await this.show(req.body.username, res)) {
-            res.status(400).send('Username must be unique.');
-            return;
+        else if(await this.prismaClient.player.findUnique({where: {username: req.body.username}})) {
+            const e = `{
+                "message": "Username must be unique"
+            }`;
+            result = JSON.parse(e);
+            res.status(400);
         }
-
-        this.prismaClient.$connect();
-        const pc = this.prismaClient
-        await bcrypt.hash(req.body.password, +process.env.SECRET_ROUNDS).then(function (hash) {
-            result = pc.player.create({
-                data: {
-                    username: req.body.username,
-                    email: req.body.email,
-                    password: hash
-                },
-                select: {
-                    username: true,
-                    email: true,
-                    created_at: true,
-                },
+        else {
+            this.prismaClient.$connect();
+            const pc = this.prismaClient
+            await bcrypt.hash(req.body.password, +process.env.SECRET_ROUNDS).then(function (hash) {
+                result = pc.player.create({
+                    data: {
+                        username: req.body.username,
+                        email: req.body.email,
+                        password: hash
+                    },
+                    select: {
+                        username: true,
+                        email: true,
+                        created_at: true,
+                    },
+                });
             });
-        });
-        this.prismaClient.$disconnect();
+            this.prismaClient.$disconnect();
+        }
         return result;
 
     }
 
-    update(id: any, req: express.Request, res: express.Response<any, Record<string, any>>): Promise<Response> {
+    update(id: any, req: express.Request, res: express.Response<any, Record<string, any>>): Promise<void> {
         throw new Error('Method not implemented.');
     }
 
-    delete(id: any, res: express.Response<any, Record<string, any>>): Promise<Response> {
+    delete(id: any, res: express.Response<any, Record<string, any>>): Promise<void> {
         throw new Error('Method not implemented.');
     }
 }
