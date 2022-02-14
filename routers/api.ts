@@ -2,7 +2,7 @@ import express from 'express';
 import * as core from 'express-serve-static-core';
 import PlayerController from '../controllers/PlayerController';
 import ClanController from '../controllers/ClanController';
-import {body, validationResult} from 'express-validator';
+import {body, check, validationResult} from 'express-validator';
 import MemberController from "../controllers/MemberController";
 
 export class Api {
@@ -83,9 +83,8 @@ export class Api {
         //Create Clan
         this.router.post(
             '/clan/create',
-            body('owner_id').not().isEmpty(),
+            body('clan_id').not().isEmpty(),
             body('name').not().isEmpty(),
-            body('slug').not().isEmpty(),
             async (req, res) => {
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
@@ -104,16 +103,13 @@ export class Api {
         //Create Member
         this.router.post(
             '/member/create',
-            body('clan_id').not().isEmpty(),
-            body('name').not().isEmpty,
             async (req, res) => {
-                console.log("route /member/create called!");
+                await check('clan_id').not().isEmpty();
+                await check('name').not().isEmpty;
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
                     return res.status(400).send(errors.array());
                 }
-
-                console.log("Validation passed, Calling controller");
                 const memberController = new MemberController();
                 await memberController.create(req, res);
             }

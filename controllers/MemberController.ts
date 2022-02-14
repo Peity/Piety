@@ -1,7 +1,5 @@
 import Controller from '../controllers/Controller';
-import express from 'express'
 import e from "express";
-import slugify from "slugify";
 import {PrismaClient} from "@prisma/client";
 
 export default class MemberController implements Controller {
@@ -14,9 +12,7 @@ export default class MemberController implements Controller {
     }
 
     public async create(req: e.Request, res: e.Response): Promise<void> {
-        console.log("MemberController.create() called ");
         let result: any;
-        console.log("Trying to Insert data to member table");
         this.prismaClient.$connect();
         try {
             result = await this.prismaClient.member.create({
@@ -32,7 +28,6 @@ export default class MemberController implements Controller {
                 }
             });
             this.prismaClient.$disconnect();
-            console.log("Successfully inserted");
             res.send(result);
         } catch (e) {
             const message = `{
