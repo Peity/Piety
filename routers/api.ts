@@ -36,9 +36,7 @@ export class Api {
         //Index Players
         this.router.get('/players', async (req, res) => {
             const playerController = new PlayerController();
-
-            const result = await playerController.index(req, res);
-            res.send(result);
+            await playerController.index(req, res);
         });
 
         //Crate Player
@@ -76,7 +74,7 @@ export class Api {
             await clanController.show(clanSlug, res);
         });
 
-        //Index Players
+        //Index Clans
         this.router.get('/clan/', async (req, res) => {
             const clanController = new ClanController();
             await clanController.index(req, res);

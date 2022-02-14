@@ -5,12 +5,25 @@ import bcrypt from 'bcrypt';
 
 export default class PlayerController implements Controller {
     prismaClient: PrismaClient;
+    // Database fields selection
+    select = {
+        id: true,
+        username: true,
+        email: true,
+        created_at: true
+    };
 
     constructor() {
         this.prismaClient = new PrismaClient({
             errorFormat: 'minimal'
         });
     }
+
+    /**
+     *
+     * @param req
+     * @param res
+     */
     public async index(req: express.Request, res: express.Response): Promise<void> {
         let result: any;
         let count: number = +req.query.count;
@@ -19,11 +32,14 @@ export default class PlayerController implements Controller {
         this.prismaClient.$connect();
 
         if (!count && !offset) {
-            result = await this.prismaClient.player.findMany();
+            result = await this.prismaClient.player.findMany({
+                select: this.select
+            });
         } else {
             result = await this.prismaClient.player.findMany({
                 skip: (offset - 1) * count,
                 take: count,
+                select: this.select
             });
         }
         this.prismaClient.$disconnect();
@@ -36,38 +52,24 @@ export default class PlayerController implements Controller {
         }
         res.send(result);
     }
-
-    public async show(username: string, res: express.Response): Promise<void> {
-        let result: any;
-        this.prismaClient.$connect();
-        result = await this.prismaClient.player.findUnique({
-            where: {
-                username: username
-            }
-        });
-        this.prismaClient.$disconnect();
-        if(result === null){
-            const e = `{
-                "message": "404 not found"
-            }`;
-            result = JSON.parse(e);
-            res.status(404);
-        }
-        res.send(result);
-    }
-
-    public async create(req: express.Request, res: express.Response): Promise<void> {
+    
+    /**
+     *
+     * @param req
+     * @param res
+     */
+     public async create(req: express.Request, res: express.Response): Promise<void> {
         let result: any;
         if(await this.prismaClient.player.findUnique({where: {email: req.body.email}})) {
             const e = `{
-                "message": "Email must be unique"
+                "message": "email must be unique"
             }`;
             result = JSON.parse(e);
             res.status(400);
         }
         else if(await this.prismaClient.player.findUnique({where: {username: req.body.username}})) {
             const e = `{
-                "message": "Username must be unique"
+                "message": "username must be unique"
             }`;
             result = JSON.parse(e);
             res.status(400);
@@ -82,24 +84,55 @@ export default class PlayerController implements Controller {
                         email: req.body.email,
                         password: hash
                     },
-                    select: {
-                        username: true,
-                        email: true,
-                        created_at: true,
-                    },
+                    select: this.select
                 });
             });
             this.prismaClient.$disconnect();
         }
-        return result;
-
+        res.send(result);
     }
 
-    update(id: any, req: express.Request, res: express.Response<any, Record<string, any>>): Promise<void> {
+    /**
+     *
+     * @param username
+     * @param res
+     */
+    public async show(username: string, res: express.Response): Promise<void> {
+        let result: any;
+        this.prismaClient.$connect();
+        result = await this.prismaClient.player.findUnique({
+            where: {
+                username: username
+            },
+            select: this.select
+        });
+        this.prismaClient.$disconnect();
+        if(result === null){
+            const e = `{
+                "message": "404 not found"
+            }`;
+            result = JSON.parse(e);
+            res.status(404);
+        }
+        res.send(result);
+    }
+
+    /**
+     *
+     * @param id
+     * @param res
+     */
+     delete(id: any, res: express.Response): Promise<void> {
         throw new Error('Method not implemented.');
     }
 
-    delete(id: any, res: express.Response<any, Record<string, any>>): Promise<void> {
+    /**
+     *
+     * @param id
+     * @param req
+     * @param res
+     */
+    update(id: any, req: express.Request, res: express.Response): Promise<void> {
         throw new Error('Method not implemented.');
     }
 }

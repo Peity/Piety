@@ -27,7 +27,7 @@ export default class ClanController implements Controller{
         this.prismaClient.$connect();
 
         if (!count && !offset) {
-            result = await this.prismaClient.player.findMany();
+            result = await this.prismaClient.clan.findMany();
         } else {
             result = await this.prismaClient.clan.findMany({
                 skip: (offset - 1) * count,
@@ -35,11 +35,12 @@ export default class ClanController implements Controller{
             });
         }
         this.prismaClient.$disconnect();
-        if (result === null) {
+        if (result.length === 0) {
             const e = `{
-                "message": "404 not found"
+                "message": "no clan found"
             }`;
             const json = JSON.parse(e);
+            res.status(400);
             res.send(json);
             return;
         }
