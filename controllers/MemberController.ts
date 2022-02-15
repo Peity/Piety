@@ -1,6 +1,7 @@
 import Controller from '../controllers/Controller';
 import e from "express";
 import {PrismaClient} from "@prisma/client";
+import ReadFile from "../helper/ReadFile";
 
 export default class MemberController implements Controller {
     prismaClient: PrismaClient;
@@ -12,6 +13,10 @@ export default class MemberController implements Controller {
     }
 
     public async create(req: e.Request, res: e.Response): Promise<void> {
+        // const name = this.createName()
+        const name = "";
+        this.createName();
+        return;
         let result: any;
         this.prismaClient.$connect();
         try {
@@ -22,7 +27,7 @@ export default class MemberController implements Controller {
                             id: +req.body.clan_id
                         },
                     },
-                    name: req.body.name,
+                    name: name,
                     type: 0,
                     revenue: 0
                 }
@@ -49,6 +54,17 @@ export default class MemberController implements Controller {
     }
 
     update(id: any, req: e.Request, res: e.Response): void {
+    }
+
+    private async createName(): Promise<void> {
+        const readFile = new ReadFile();
+        const names = await readFile.readTextFile('../piety/name.txt');
+        const family = await readFile.readTextFile('../piety/family.txt');
+        console.log(names);
+        // const nameIndex = Math.floor(Math.random() * names.length);
+        // const familyIndex = Math.floor(Math.random() * family.length);
+
+        // return names[nameIndex] + " " + family[familyIndex];
     }
 
 }
