@@ -1,15 +1,13 @@
 import fs from 'fs'
-
 export default class ReadFile {
 
-    async readTextFile(path: string): Promise<string[]> {
-        let array: string[]
-        fs.readFile(path, await function (err, data) {
-            if (err) throw err;
+    readTextFile(path: string): string[] {
+        const data= fs.readFileSync(path, {
+            encoding: 'utf8',
+            flag: 'r'
+        })
+        const arr = data.toString().replace(/\r\n/g,'\n').split('\n');
 
-            array = data.toString().replace(/\r\n/g, '\n').split('\n')
-        });
-
-        return array
+        return arr;
     }
 }

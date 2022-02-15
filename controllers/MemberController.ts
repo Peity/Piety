@@ -13,10 +13,7 @@ export default class MemberController implements Controller {
     }
 
     public async create(req: e.Request, res: e.Response): Promise<void> {
-        // const name = this.createName()
-        const name = "";
-        this.createName();
-        return;
+        const name = MemberController.createName();;
         let result: any;
         this.prismaClient.$connect();
         try {
@@ -56,15 +53,14 @@ export default class MemberController implements Controller {
     update(id: any, req: e.Request, res: e.Response): void {
     }
 
-    private async createName(): Promise<void> {
+    private static createName(): string {
         const readFile = new ReadFile();
-        const names = await readFile.readTextFile('../piety/name.txt');
-        const family = await readFile.readTextFile('../piety/family.txt');
-        console.log(names);
-        // const nameIndex = Math.floor(Math.random() * names.length);
-        // const familyIndex = Math.floor(Math.random() * family.length);
+        const names = readFile.readTextFile('name.txt');
+        const family = readFile.readTextFile('family.txt');
+        const nameIndex = Math.floor(Math.random() * names.length);
+        const familyIndex = Math.floor(Math.random() * family.length);
 
-        // return names[nameIndex] + " " + family[familyIndex];
+        return names[nameIndex] + " " + family[familyIndex];
     }
 
 }
