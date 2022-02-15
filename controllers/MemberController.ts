@@ -13,7 +13,7 @@ export default class MemberController implements Controller {
     }
 
     public async create(req: e.Request, res: e.Response): Promise<void> {
-        const name = MemberController.createName();;
+        const name = MemberController.createName();
         let result: any;
         this.prismaClient.$connect();
         try {
