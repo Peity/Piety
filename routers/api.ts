@@ -114,5 +114,12 @@ export class Api {
                 await memberController.create(req, res);
             }
         );
+
+        //Get Member
+        this.router.get('/member/:id', async (req, res) => {
+            const id = + req.params.id;
+            const memberController = new MemberController();
+            await memberController.show(id, res);
+        });
     }
 }

@@ -1,6 +1,7 @@
 import Controller from '../controllers/Controller';
 import e from "express";
 import {PrismaClient} from "@prisma/client";
+import prisma from "prisma";
 import ReadFile from "../helper/ReadFile";
 
 export default class MemberController implements Controller {
@@ -47,10 +48,33 @@ export default class MemberController implements Controller {
     index(req: e.Request, res: e.Response): void {
     }
 
-    show(id: any, res: e.Response): void {
+    public async show(id: number, res: e.Response): Promise<void> {
+        let result: prisma.Member;
+        this.prismaClient.$connect();
+        result = await this.prismaClient.member.findUnique({
+            where: {
+                id: id
+            }
+        });
+        this.prismaClient.$disconnect();
+        if(result === null){
+            const e = `{
+                "message": "404 not found"
+            }`;
+            const json = JSON.parse(e);
+            res.status(404).send(json);
+            return;
+        }
+        res.send(result);
     }
 
     update(id: any, req: e.Request, res: e.Response): void {
+        let result: any;
+
+    }
+
+    private async quickUpdate(member: prisma.member): Promise<void>{
+
     }
 
     private static createName(): string {
@@ -63,4 +87,8 @@ export default class MemberController implements Controller {
         return names[nameIndex] + " " + family[familyIndex];
     }
 
+    private calcuateRevenue(member: prisma.member): number{
+        member.name = "Hello";
+        return 0;
+    }
 }
