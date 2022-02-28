@@ -1,9 +1,44 @@
-import express from 'express';
+import { Player } from "../models/player";
+import { Request, Response} from "express";
+ 
 
-export default interface controller{
-    index(req: express.Request, res: express.Response): void;
-    show(id: any, res: express.Response): void;
-    create(req: express.Request, res: express.Response): void;
-    update(id: any, req:express.Request, res: express.Response): void;
-    delete(id: any, res:express.Response): void;
+interface Controller{
+    index(): Promise<void>;
+    create(req: Request, res: Response): void;
+    update(): Promise<void>;
+    delete(): Promise<void>;
+}
+
+
+export class PlayerController implements Controller{
+    
+    index(): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    async create(req: Request, res: Response): Promise<void> {
+
+        const player = new Player({
+            username: req.body.username,
+            email: req.body.email,
+            password: req.body.password
+          });
+        
+          player.save().then(
+          () => { 
+              res.json({
+                  "message": `Successfully created ${player.username}`
+              });
+          },
+          (err) => { console.log(err);}
+        );
+
+    }
+    update(): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+    delete(): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
+
 }
