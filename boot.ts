@@ -11,7 +11,7 @@ var api = new Api();
 
 mongoose.connect('mongodb://developer:123123@localhost:27017/Piety')
   .then(() => {
-    console.log("Successfullt connected to mongoDB");
+    console.log("Successfully connected to mongoDB");
   },
   (err) => {
     console.log(err);

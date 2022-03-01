@@ -1,44 +1,39 @@
-import { Player } from "../models/player";
 import { Request, Response} from "express";
+import mongoose from "mongoose";
  
 
-interface Controller{
+export interface IController{
+    relatedModel: mongoose.Model<any> | undefined;
+
     index(): Promise<void>;
+    show(req: Request, res: Response): void;
     create(req: Request, res: Response): void;
     update(): Promise<void>;
-    delete(): Promise<void>;
+    delete(req: Request, res: Response): Promise<void>;
 }
 
 
-export class PlayerController implements Controller{
-    
+export class Controller implements IController{
+    relatedModel: mongoose.Model<any> | undefined;
+
+    show(req: Request, res: Response): void {
+        throw new Error("Method not implemented.");
+    }
+
     index(): Promise<void> {
         throw new Error("Method not implemented.");
     }
 
     async create(req: Request, res: Response): Promise<void> {
-
-        const player = new Player({
-            username: req.body.username,
-            email: req.body.email,
-            password: req.body.password
-          });
-        
-          player.save().then(
-          () => { 
-              res.json({
-                  "message": `Successfully created ${player.username}`
-              });
-          },
-          (err) => { console.log(err);}
-        );
+        throw new Error("Method not implemented.");
 
     }
     update(): Promise<void> {
         throw new Error("Method not implemented.");
     }
-    delete(): Promise<void> {
+    delete(req: Request, res: Response): Promise<void> {
         throw new Error("Method not implemented.");
     }
+
 
 }
