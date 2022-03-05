@@ -1,24 +1,49 @@
-import { Player } from "../models/player";
+import { IPlayer, Player } from "../models/player";
 import { Request, Response} from "express";
 import mongoose from "mongoose";
-import { IController, Controller } from "./controller";
+import { IController } from "./controller";
+import slugify from "slugify";
 
-export class PlayerController extends Controller implements IController{
+export class PlayerController implements IController{
     relatedModel: mongoose.Model<any>;
     
     constructor(){
-        super();
         this.relatedModel = Player;
     }
 
-    index(): Promise<void> {
-        throw new Error("Method not implemented.");
+    async show(slug: string, res: Response): Promise<void> {
+        Player.findOne({'slug' : slug})
+            .then(
+                (result) => {
+                    if (!result){
+                        return res.status(404).send("404 Not Found!");
+                    }
+                    res.send(result);
+                },
+                (err: { message: any}) => {
+                    res.send(err.message);
+                }
+            );
+
+    }
+
+    async index(res: Response): Promise<void> {
+        Player.find({}, (err, players) => {
+            let playerMap: (IPlayer & { _id: any; })[] = [];
+
+            players.forEach(function(player){
+                playerMap.push(player);
+            });
+            
+            res.send(playerMap);
+        });
     }
 
     async create(req: Request, res: Response): Promise<void> {
 
         const player = new this.relatedModel({
             username: req.body.username,
+            slug: slugify(req.body.slug, {lower: true, }),
             email: req.body.email,
             password: req.body.password
           });
@@ -37,6 +62,7 @@ export class PlayerController extends Controller implements IController{
         );
 
     }
+
     update(): Promise<void> {
         throw new Error("Method not implemented.");
     }

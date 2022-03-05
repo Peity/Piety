@@ -1,6 +1,6 @@
 import express, { response } from 'express';
 import * as core from 'express-serve-static-core';
-import { PlayerController } from '../controllers/controller';
+import { PlayerController } from '../controllers/playerController';
 
 var playerController = new PlayerController();
 
@@ -27,6 +27,16 @@ export class Api {
         // Create Players
         this.router.post("/player/create", async (req, res) => {
             playerController.create(req, res);
+        });
+
+        // Get Player by slug
+        this.router.get("/player/:slug", async (req, res) => {
+            playerController.show(req.params.slug, res);
         })
+
+        // Get All Players
+        this.router.get("/players" , async (req, res) => {
+            playerController.index(res);
+        });
     }
 }

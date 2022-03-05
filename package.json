@@ -28,6 +28,7 @@
     "@types/mongoose": "^5.11.97",
     "body-parser": "^1.19.2",
     "express": "^4.17.3",
-    "mongoose": "^6.2.3"
+    "mongoose": "^6.2.3",
+    "slugify": "^1.6.5"
   }
 }
