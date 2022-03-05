@@ -33,10 +33,21 @@ export class Api {
         this.router.get("/player/:slug", async (req, res) => {
             playerController.show(req.params.slug, res);
         })
+        
+        // Delete Player
+        this.router.get("/player/:slug/delete", async (req, res) => {
+            playerController.delete(req.params.slug, res);
+        })
+
+        // update Players
+        this.router.post("/player/:slug/update", async (req, res) => {
+            playerController.update(req.params.slug, req, res);
+        });
 
         // Get All Players
         this.router.get("/players" , async (req, res) => {
             playerController.index(res);
         });
+
     }
 }
