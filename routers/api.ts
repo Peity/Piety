@@ -1,8 +1,10 @@
 import express, { response } from 'express';
 import * as core from 'express-serve-static-core';
 import { PlayerController } from '../controllers/playerController';
+import { ClanController } from '../controllers/clanController';
 
 var playerController = new PlayerController();
+var clanController = new ClanController();
 
 export class Api {
     router: core.Router;
@@ -49,5 +51,16 @@ export class Api {
             playerController.index(res);
         });
 
+
+             /*
+        ---------------------------------------------------------
+                            Clan Routes
+        ---------------------------------------------------------
+         */
+
+        // Create Clan
+        this.router.post("/clan/create" , async (req, res) => {
+            clanController.create(req, res);
+        });
     }
 }
