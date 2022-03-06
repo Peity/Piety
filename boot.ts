@@ -10,9 +10,7 @@ dotenv.config();
 
 var api = new Api();
 
-const mngoUrl: string = process.env.MONGO_URL as string;
-
-mongoose.connect(mngoUrl)
+mongoose.connect(process.env.MONGO_URL as string)
   .then(() => {
     console.log("Successfully connected to mongoDB");
   },
@@ -26,6 +24,6 @@ mongoose.connect(mngoUrl)
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use("/api", api.router);
-    app.listen(process.env.PORT);
+    app.listen(parseInt(process.env.PORT as string), process.env.HOST as string);
     console.log(`Running on http://localhost:${process.env.PORT}`);
 
