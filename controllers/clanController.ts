@@ -13,7 +13,18 @@ export class ClanController extends ControllerHelper implements IController{
         this.relatedModel = Clan;
     }
     index(res: Response): void {
-        throw new Error("Method not implemented.");
+        this.relatedModel.find({}, (err, clans) => {
+            if (!clans) {
+                return this.notFound(res);
+            }
+            let clanMap: (IClan & { _id: any; })[] = [];
+
+            clans.forEach(function (clan) {
+                clanMap.push(clan);
+            });
+
+            res.send(clanMap);
+        }).populate('owner', 'username email');
     }
 
     async create(req: Request, res: Response): Promise<void>{
@@ -59,8 +70,13 @@ export class ClanController extends ControllerHelper implements IController{
         throw new Error("Method not implemented.");
     }
 
-    delete(id: any, res: Response): void {
-        throw new Error("Method not implemented.");
+    async delete(slug: string, res: Response): Promise<void> {
+        const clan = await this.relatedModel.findOne({ "slug" : slug });
+        if(!clan){
+            return this.notFound(res);
+        }
+        clan.remove();
+        res.send(`Successfully removed ${clan.name}`);
     }
 
     async fetchOwner(id: mongoose.Types.ObjectId): Promise<string | null>{

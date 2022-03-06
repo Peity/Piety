@@ -3,13 +3,16 @@ import mongoose from "mongoose";
 import { Api } from "./routers/api";
 import { Player } from "./models/player";
 import * as bodyParser from 'body-parser';
+import dotenv from 'dotenv';
 
-const HOST = '0.0.0.0';
-const PORT = 8080;
+dotenv.config();
+
 
 var api = new Api();
 
-mongoose.connect('mongodb://developer:123123@localhost:27017/Piety')
+const mngoUrl: string = process.env.MONGO_URL as string;
+
+mongoose.connect(mngoUrl)
   .then(() => {
     console.log("Successfully connected to mongoDB");
   },
@@ -23,6 +26,6 @@ mongoose.connect('mongodb://developer:123123@localhost:27017/Piety')
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use("/api", api.router);
-    app.listen(PORT, HOST);
-    console.log(`Running on http://localhost:${PORT}`);
+    app.listen(process.env.PORT);
+    console.log(`Running on http://localhost:${process.env.PORT}`);
 

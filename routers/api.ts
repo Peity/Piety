@@ -9,22 +9,22 @@ var clanController = new ClanController();
 export class Api {
     router: core.Router;
 
-    constructor(){
+    constructor() {
         this.router = express.Router();
         this.initRoutes();
         console.log("Router initiated");
     }
 
-    initRoutes(){
+    initRoutes() {
         this.router.get("/", (req, res) => {
             res.sendStatus(200);
         });
 
-          /*
-        ---------------------------------------------------------
-                            Player Routes
-        ---------------------------------------------------------
-         */
+        /*
+      ---------------------------------------------------------
+                          Player Routes
+      ---------------------------------------------------------
+       */
 
         // Create Players
         this.router.post("/player/create", async (req, res) => {
@@ -35,7 +35,7 @@ export class Api {
         this.router.get("/player/:slug", async (req, res) => {
             playerController.show(req.params.slug, res);
         })
-        
+
         // Delete Player
         this.router.get("/player/:slug/delete", async (req, res) => {
             playerController.delete(req.params.slug, res);
@@ -47,25 +47,35 @@ export class Api {
         });
 
         // Get All Players
-        this.router.get("/players" , async (req, res) => {
+        this.router.get("/players", async (req, res) => {
             playerController.index(res);
         });
 
 
-             /*
+        /*
         ---------------------------------------------------------
                             Clan Routes
         ---------------------------------------------------------
-         */
+        */
 
         // Create Clan
-        this.router.post("/clan/create" , async (req, res) => {
+        this.router.post("/clan/create", async (req, res) => {
             clanController.create(req, res);
         });
 
         // Get Clan ny Slug
-        this.router.get("/clan/:slug" , async (req, res) => {
+        this.router.get("/clan/:slug", async (req, res) => {
             clanController.show(req.params.slug, res);
+        });
+
+        // Delete Clans
+        this.router.get("/clan/:slug/delete", async (req, res) => {
+            clanController.delete(req.params.slug, res);
+        });
+
+        // Get All Clans
+        this.router.get("/clans", async (req, res) => {
+            clanController.index(res);
         });
     }
 }
