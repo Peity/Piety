@@ -62,5 +62,10 @@ export class Api {
         this.router.post("/clan/create" , async (req, res) => {
             clanController.create(req, res);
         });
+
+        // Get Clan ny Slug
+        this.router.get("/clan/:slug" , async (req, res) => {
+            clanController.show(req.params.slug, res);
+        });
     }
 }

@@ -1,10 +1,9 @@
 import { Clan, IClan } from "../models/clan";
+import { Player } from "../models/player";
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { IController, ControllerHelper } from "./controller";
 import slugify from "slugify";
-import { ParamsDictionary } from "express-serve-static-core";
-import { ParsedQs } from "qs";
 
 export class ClanController extends ControllerHelper implements IController{
     relatedModel: mongoose.Model<any>;
@@ -18,12 +17,17 @@ export class ClanController extends ControllerHelper implements IController{
     }
 
     async create(req: Request, res: Response): Promise<void>{
+        const player = await Player.findOne({ "slug" : req.body.playerSlug});
+
+        if(!player){
+            return this.notFound(res);
+        }
+
         const clan = new this.relatedModel({
             name: req.body.name,
             slug: slugify(req.body.slug, { lower: true, }),
+            owner: player._id,
         });
-
-        clan.owner.push(req.body.playerSlug);
 
         clan.save().then(
             () => {
@@ -39,13 +43,27 @@ export class ClanController extends ControllerHelper implements IController{
         );
     }
 
-    show(id: any, res: Response): void {
-        throw new Error("Method not implemented.");
+    async show(slug: string, res: Response): Promise<void> {
+        this.relatedModel.findOne({ "slug" : slug }).populate('owner', 'username email').then(
+            (result) => {
+                res.send(result);
+            },
+
+            (error) => {
+                this.notFound(res);
+            }
+        );
     }
+
     update(id: any, req: Request, res: Response): void {
         throw new Error("Method not implemented.");
     }
+
     delete(id: any, res: Response): void {
         throw new Error("Method not implemented.");
+    }
+
+    async fetchOwner(id: mongoose.Types.ObjectId): Promise<string | null>{
+        return await Player.findById(id);
     }
 }
