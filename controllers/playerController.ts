@@ -122,7 +122,7 @@ export class PlayerController extends ControllerHelper implements IController {
     async getClan(slug: string, res: Response): Promise<void> {
         const player = await this.relatedModel.findOne({ 'slug' : slug }).populate({
             path: 'clan',
-            select: 'username email'
+            select: 'name slug'
         });
         res.send(player);
     }
