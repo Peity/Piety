@@ -22,6 +22,10 @@ const ClanSchema = new mongoose.Schema({
     timestamps: true
 });
 
+/**
+ * This method shall get called after clan initiated to update the related Player document's clan field.
+ * @returns 
+ */
 ClanSchema.methods.updateRelatedPlayer = async function updateRelatedPlayer() {
     const player = await Player.findById(this.owner);
 
@@ -41,6 +45,10 @@ ClanSchema.methods.updateRelatedPlayer = async function updateRelatedPlayer() {
     return `Successfully updated ${player.username}`;
 };
 
+/**
+ * This method shall get called right before removing the clan to clear the related player's clan field in Player document.
+ * @returns 
+ */ 
 ClanSchema.methods.removeRelatedPlayer = async function removeRelatedPlayer() {
     const player = await Player.findById(this.owner);
 
