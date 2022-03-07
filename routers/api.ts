@@ -77,5 +77,12 @@ export class Api {
         this.router.get("/clans", async (req, res) => {
             clanController.index(res);
         });
+
+
+
+
+        this.router.get("/test/:slug", async (req, res) => {
+            playerController.getClan(req.params.slug, res);
+        });
     }
 }

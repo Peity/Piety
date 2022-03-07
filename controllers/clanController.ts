@@ -42,6 +42,7 @@ export class ClanController extends ControllerHelper implements IController{
 
         clan.save().then(
             () => {
+                clan.updateRelatedPlayer();
                 res.json({
                     "message": `Successfully created ${clan.name}`
                 });
@@ -75,6 +76,7 @@ export class ClanController extends ControllerHelper implements IController{
         if(!clan){
             return this.notFound(res);
         }
+        clan.removeRelatedPlayer();
         clan.remove();
         res.send(`Successfully removed ${clan.name}`);
     }

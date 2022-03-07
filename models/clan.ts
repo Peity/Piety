@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { Player } from './player';
 
 
 export interface IClan extends mongoose.Document {
@@ -21,4 +22,45 @@ const ClanSchema = new mongoose.Schema({
     timestamps: true
 });
 
+ClanSchema.methods.updateRelatedPlayer = async function updateRelatedPlayer() {
+    const player = await Player.findById(this.owner);
+
+    if(!player){
+        return `No player found`;
+    }
+
+    player.overwrite({
+        username: player.username,
+        slug: player.slug,
+        email: player.email,
+        password: player.password,
+        clan: this._id
+    });
+
+    player.save();
+    return `Successfully updated ${player.username}`;
+};
+
+ClanSchema.methods.removeRelatedPlayer = async function removeRelatedPlayer() {
+    const player = await Player.findById(this.owner);
+
+    if(!player){
+        return `No player found`;
+    }
+
+    player.overwrite({
+        username: player.username,
+        slug: player.slug,
+        email: player.email,
+        password: player.password,
+        clan: null
+    });
+
+    player.save();
+    return `Successfully updated ${player.username}`;
+};
+
+
+
 export const Clan: mongoose.Model<IClan> = mongoose.model('Clan', ClanSchema);
+
