@@ -14,7 +14,7 @@ export interface IClan extends mongoose.Document {
 const ClanSchema = new mongoose.Schema({
     name:{ type: String, required: true, unique: true, dropDups: true },
     slug:{ type: String, required: true, unique: true, dropDups: true },
-    owner: {type: mongoose.Schema.Types.ObjectId, ref: 'Player', unique: true},
+    owner: {type: mongoose.Schema.Types.ObjectId, ref: 'Player', unique: true, required: true},
     gold: { type: Number, default: 1000},
     supply: { type: Number, default: 1000},
     level: { type: Number, default: 0}
