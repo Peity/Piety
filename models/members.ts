@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import ReadFile from "../helper/ReadFile";
 
 
 export interface IMember extends mongoose.Document{
@@ -9,6 +10,10 @@ export interface IMember extends mongoose.Document{
     state: Number;
     life_status: Boolean;
     revenue: Number;
+}
+
+interface MemberModel extends mongoose.Model<IMember>{
+    generateName(): string;
 }
 
 export enum MemberTypes {
@@ -25,4 +30,16 @@ const MemberSchema = new mongoose.Schema({
     revenue: { type: Number, default: 0 }
 });
 
-export const Member: mongoose.Model<IMember> = mongoose.model('Mamber', MemberSchema);
+MemberSchema.static('generateName', function generateName() {
+    const readFile = new ReadFile();
+    const names = readFile.readTextFile('name.txt');
+    const family = readFile.readTextFile('family.txt');
+    const nameIndex = Math.floor(Math.random() * names.length);
+    const familyIndex = Math.floor(Math.random() * family.length);
+
+    return names[nameIndex] + " " + family[familyIndex];
+});
+
+export const Member = mongoose.model<IMember, MemberModel>('Member', MemberSchema);
+
+
