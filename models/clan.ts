@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { Member } from './members';
 import { Player } from './player';
 
 
@@ -12,7 +13,7 @@ export interface IClan extends mongoose.Document {
     members: Array<mongoose.Types.ObjectId>;
 }
 
-const ClanSchema = new mongoose.Schema({
+const ClanSchema = new mongoose.Schema<IClan>({
     name:{ type: String, required: true, unique: true, dropDups: true },
     slug:{ type: String, required: true, unique: true, dropDups: true },
     owner: {type: mongoose.Schema.Types.ObjectId, ref: 'Player', unique: true, required: true},
@@ -71,6 +72,15 @@ ClanSchema.methods.removeRelatedPlayer = async function removeRelatedPlayer() {
     return `Successfully updated ${player.username}`;
 };
 
+ClanSchema.methods.deleteAllRelevantMembers = async function (){
+    const members = await Member.find({ 'clan_id' : this._id });
+    
+    members.forEach(member => {
+        member.delete();
+    });
 
+    this.members = [];
+    await this.save();
+};
 
 export const Clan: mongoose.Model<IClan> = mongoose.model('Clan', ClanSchema);

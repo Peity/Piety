@@ -67,7 +67,7 @@ export class MemberController extends ControllerHelper implements IController {
         if(!member){
             return this.notFound(res);
         }
-        await member.removeRelatedPlayer();
+        await member.removefromRelatedClan();
         await member.delete();
         this.success(res);
     }

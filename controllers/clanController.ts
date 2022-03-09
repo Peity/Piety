@@ -84,4 +84,10 @@ export class ClanController extends ControllerHelper implements IController{
     async fetchOwner(id: mongoose.Types.ObjectId): Promise<string | null>{
         return await Player.findById(id);
     }
+
+    async deleteAllMembers(clanSlug: string, res: Response): Promise<void>{
+        const clan = await this.relatedModel.findOne({ 'slug' : clanSlug});
+        await clan.deleteAllRelevantMembers();
+        return this.success(res);
+    }
 }

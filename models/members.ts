@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 import ReadFile from "../helper/ReadFile";
 import { Clan } from '../models/clan';
+import { MemberState, MemberTypes } from '../helper/enums';
 
 
-export interface IMember extends mongoose.Document{
+export interface IMember extends mongoose.Document {
     clan_id: mongoose.Types.ObjectId;
     name: String;
     type: String;
@@ -13,21 +14,17 @@ export interface IMember extends mongoose.Document{
     revenue: Number;
 }
 
-interface MemberModel extends mongoose.Model<IMember>{
+interface MemberModel extends mongoose.Model<IMember> {
     generateName(): string;
-}
-
-export enum MemberTypes {
-    Warrior = `Warrior`,
-    Farmer = `Farmer`
 }
 
 const MemberSchema = new mongoose.Schema({
     clan_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Clan', required: true },
     name: { type: String, required: true },
-    type: { type: String, enum: MemberTypes, default: MemberTypes.Warrior},
+    type: { type: String, enum: MemberTypes, default: MemberTypes.Warrior },
     hired_at: { type: Date, default: Date.now },
-    life_status: { type: Boolean, default: true},
+    state: { type: String, enum: MemberState, default: MemberState.Idle},
+    life_status: { type: Boolean, default: true },
     revenue: { type: Number, default: 0 }
 });
 
@@ -48,7 +45,7 @@ MemberSchema.static('generateName', function generateName() {
 MemberSchema.methods.updateRelatedClan = async function () {
     const clan = await Clan.findById(this.clan_id);
 
-    if(!clan){
+    if (!clan) {
         return `No clan found`;
     }
 
@@ -61,10 +58,10 @@ MemberSchema.methods.updateRelatedClan = async function () {
     return `operation successfull`;
 };
 
-MemberSchema.methods.removeRelatedPlayer = async function () {
+MemberSchema.methods.removefromRelatedClan = async function () {
     const clan = await Clan.findById(this.clan_id);
 
-    if(!clan){
+    if (!clan) {
         return `No clan found`;
     }
 
@@ -76,7 +73,10 @@ MemberSchema.methods.removeRelatedPlayer = async function () {
     await clan.save();
 
     return `Operation Successfull`;
+};
 
+MemberSchema.methods.kill = async function () {
+    this.life_status = false;
 };
 
 export const Member = mongoose.model<IMember, MemberModel>('Member', MemberSchema);
