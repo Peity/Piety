@@ -57,6 +57,7 @@ export class MemberController extends ControllerHelper implements IController {
 
     }
 
+    //TODO: Update function missing.
     update(id: any, req: Request, res: Response): void {
         throw new Error("Method not implemented.");
     }

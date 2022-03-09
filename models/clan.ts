@@ -83,4 +83,9 @@ ClanSchema.methods.deleteAllRelevantMembers = async function (){
     await this.save();
 };
 
+/**
+ * TODO:
+ * Define all methods for easy database relation fetch.
+ */
+
 export const Clan: mongoose.Model<IClan> = mongoose.model('Clan', ClanSchema);

@@ -12,6 +12,7 @@ export class ClanController extends ControllerHelper implements IController{
         super();
         this.relatedModel = Clan;
     }
+    
     index(res: Response): void {
         this.relatedModel.find({}, (err, clans) => {
             if (!clans) {
@@ -68,6 +69,7 @@ export class ClanController extends ControllerHelper implements IController{
     }
 
     update(id: any, req: Request, res: Response): void {
+        //TODO: Update function still missing.
         throw new Error("Method not implemented.");
     }
 
