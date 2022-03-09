@@ -1,4 +1,4 @@
-import { Member, IMember, MemberTypes } from "../models/members";
+import { Member, IMember } from "../models/members";
 import { Clan } from "../models/clan";
 import { Request, Response } from "express";
 import mongoose from "mongoose";
