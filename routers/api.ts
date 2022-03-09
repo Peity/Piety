@@ -3,6 +3,7 @@ import * as core from 'express-serve-static-core';
 import { PlayerController } from '../controllers/playerController';
 import { ClanController } from '../controllers/clanController';
 import { MemberController } from '../controllers/memberController';
+import e from 'express';
 
 var playerController = new PlayerController();
 var clanController = new ClanController();
@@ -39,7 +40,7 @@ export class Api {
         })
 
         // Delete Player
-        this.router.get("/player/:slug/delete", async (req, res) => {
+        this.router.post("/player/:slug/delete", async (req, res) => {
             playerController.delete(req.params.slug, res);
         })
 
@@ -71,7 +72,7 @@ export class Api {
         });
 
         // Delete Clans
-        this.router.get("/clan/:slug/delete", async (req, res) => {
+        this.router.post("/clan/:slug/delete", async (req, res) => {
             clanController.delete(req.params.slug, res);
         });
 
@@ -90,6 +91,21 @@ export class Api {
         // Create Member
         this.router.post("/clan/:clanSlug/member/create", async (req, res) => {
             memberController.create(req, res);
+        });
+
+        // Index Members of Clan
+        this.router.get("/clan/:clanSlug/members", async (req, res) => {
+            memberController.index(res, req.params.clanSlug);
+        });
+
+        // Show Member
+        this.router.get("/member/:id", async (req, res) => {
+            memberController.show(req.params.id, res);
+        });
+
+        // Delete Member
+        this.router.post("/member/:id/delete", async (req, res) => {
+            memberController.delete(req.params.id, res);
         });
 
 
