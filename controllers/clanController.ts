@@ -56,7 +56,7 @@ export class ClanController extends ControllerHelper implements IController{
     }
 
     async show(slug: string, res: Response): Promise<void> {
-        this.relatedModel.findOne({ "slug" : slug }).populate('owner', 'username email').then(
+        this.relatedModel.findOne({ "slug" : slug }).populate('owner', 'username email').populate('members', 'name').then(
             (result) => {
                 res.send(result);
             },

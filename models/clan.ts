@@ -9,7 +9,7 @@ export interface IClan extends mongoose.Document {
     gold: number;
     supply: number;
     level: number;
-    member: mongoose.Types.ObjectId;
+    members: Array<mongoose.Types.ObjectId>;
 }
 
 const ClanSchema = new mongoose.Schema({
@@ -19,7 +19,7 @@ const ClanSchema = new mongoose.Schema({
     gold: { type: Number, default: 1000},
     supply: { type: Number, default: 1000},
     level: { type: Number, default: 0},
-    member: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member'}]
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member'}]
 
 },{
     timestamps: true
@@ -74,4 +74,3 @@ ClanSchema.methods.removeRelatedPlayer = async function removeRelatedPlayer() {
 
 
 export const Clan: mongoose.Model<IClan> = mongoose.model('Clan', ClanSchema);
-

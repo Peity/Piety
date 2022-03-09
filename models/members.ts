@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import ReadFile from "../helper/ReadFile";
+import { Clan } from '../models/clan';
 
 
 export interface IMember extends mongoose.Document{
@@ -14,8 +15,6 @@ export interface IMember extends mongoose.Document{
 
 interface MemberModel extends mongoose.Model<IMember>{
     generateName(): string;
-    updateRelatedClan(): string;
-    removeFromRelatedClan(): string;
 }
 
 export enum MemberTypes {
@@ -42,6 +41,24 @@ MemberSchema.static('generateName', function generateName() {
     return names[nameIndex] + " " + family[familyIndex];
 });
 
+/**
+ * 
+ * @returns 
+ */
+MemberSchema.methods.updateRelatedClan = async function () {
+    const clan = await Clan.findById(this.clan_id);
+
+    if(!clan){
+        return `No clan found`;
+    }
+
+    const clanMembers = clan.members;
+    clanMembers.push(this._id);
+
+    clan.members = clanMembers;
+    clan.save();
+
+    return `operation successfull`;
+};
+
 export const Member = mongoose.model<IMember, MemberModel>('Member', MemberSchema);
-
-

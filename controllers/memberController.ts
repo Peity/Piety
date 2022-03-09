@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { IController, ControllerHelper } from "./controller";
 
 export class MemberController extends ControllerHelper implements IController {
-    relatedModel:  mongoose.Model<IMember>;
+    relatedModel:  mongoose.Model<any>;
 
     constructor(){
         super();
@@ -35,6 +35,7 @@ export class MemberController extends ControllerHelper implements IController {
 
         member.save().then(
             () => {
+                member.updateRelatedClan();
                 res.send(`The member: ${member.name} generated successfully!`);
             }
         ).catch((err: { message: any; }) => {
