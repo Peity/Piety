@@ -14,6 +14,8 @@ export interface IMember extends mongoose.Document{
 
 interface MemberModel extends mongoose.Model<IMember>{
     generateName(): string;
+    updateRelatedClan(): string;
+    removeFromRelatedClan(): string;
 }
 
 export enum MemberTypes {

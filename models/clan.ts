@@ -9,6 +9,7 @@ export interface IClan extends mongoose.Document {
     gold: number;
     supply: number;
     level: number;
+    member: mongoose.Types.ObjectId;
 }
 
 const ClanSchema = new mongoose.Schema({
@@ -17,7 +18,9 @@ const ClanSchema = new mongoose.Schema({
     owner: {type: mongoose.Schema.Types.ObjectId, ref: 'Player', unique: true, required: true},
     gold: { type: Number, default: 1000},
     supply: { type: Number, default: 1000},
-    level: { type: Number, default: 0}
+    level: { type: Number, default: 0},
+    member: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member'}]
+
 },{
     timestamps: true
 });
