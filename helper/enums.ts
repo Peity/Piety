@@ -8,5 +8,5 @@ export enum MemberState {
     Defending = `Defending`,
     Idle = `Idle`,
     Invading = `Invading`,
-    OnMission = `On Mission`
+    InExpedition = `In Expedition`
 }
