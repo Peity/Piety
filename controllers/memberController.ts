@@ -22,6 +22,7 @@ export class MemberController extends ControllerHelper implements IController {
         res.send(members);
 
     }
+
     async show(id: string, res: Response): Promise<void> {
 
         const member = await this.relatedModel.findById(id).populate('clan_id', 'name');
@@ -48,7 +49,7 @@ export class MemberController extends ControllerHelper implements IController {
         member.save().then(
             () => {
                 member.updateRelatedClan();
-                res.send(member.populate('clan_id', 'name'));
+                res.send(member);
             }
         ).catch((err: { message: any; }) => {
             res.status(400).send(`error: ${err.message}`);
@@ -66,6 +67,7 @@ export class MemberController extends ControllerHelper implements IController {
         if(!member){
             return this.notFound(res);
         }
+        await member.removeRelatedPlayer();
         await member.delete();
         this.success(res);
     }

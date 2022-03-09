@@ -61,4 +61,22 @@ MemberSchema.methods.updateRelatedClan = async function () {
     return `operation successfull`;
 };
 
+MemberSchema.methods.removeRelatedPlayer = async function () {
+    const clan = await Clan.findById(this.clan_id);
+
+    if(!clan){
+        return `No clan found`;
+    }
+
+    const clanMembers = clan.members;
+    const index = clanMembers.indexOf(this._id);
+    clanMembers.splice(index, 1);
+
+    clan.members = clanMembers;
+    await clan.save();
+
+    return `Operation Successfull`;
+
+};
+
 export const Member = mongoose.model<IMember, MemberModel>('Member', MemberSchema);
