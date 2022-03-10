@@ -3,7 +3,6 @@ import * as core from 'express-serve-static-core';
 import { PlayerController } from '../controllers/playerController';
 import { ClanController } from '../controllers/clanController';
 import { MemberController } from '../controllers/memberController';
-import e from 'express';
 
 var playerController = new PlayerController();
 var clanController = new ClanController();
@@ -108,10 +107,18 @@ export class Api {
             memberController.delete(req.params.id, res);
         });
 
+        // Change Member's Task
+        this.router.post("/member/:id/task/change", async (req, res) => {
+            memberController.changeTask(req.params.id, +(req.body.taskNumber), res);
+        });
 
+        // Calculate Member's revenue
+        this.router.get("/member/:id/task/revenue", async (req, res) => {
+            memberController.calculateRevenue(req.params.id, res);
+        });
 
-        this.router.get("/test/:slug", async (req, res) => {
-            playerController.getClan(req.params.slug, res);
+        this.router.get("/test", async (req, res) => {
+
         });
     }
 }

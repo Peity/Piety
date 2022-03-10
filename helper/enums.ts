@@ -3,10 +3,16 @@ export enum MemberTypes {
     Farmer = `Farmer`
 }
 
-export enum MemberState {
+export enum TaskName {
     Farming = `Farming`,
     Defending = `Defending`,
     Idle = `Idle`,
     Invading = `Invading`,
     InExpedition = `In Expedition`
+}
+
+export enum TaskState {
+    Done = `Done`,
+    Failed = `Failed`,
+    InProgress = `In Progress`
 }

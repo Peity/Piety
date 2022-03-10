@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import ReadFile from "../helper/ReadFile";
 import { Clan } from '../models/clan';
-import { MemberState, MemberTypes } from '../helper/enums';
+import { TaskName, MemberTypes } from '../helper/enums';
+import { Task } from '../models/task';
 
 
 export interface IMember extends mongoose.Document {
@@ -9,7 +10,7 @@ export interface IMember extends mongoose.Document {
     name: String;
     type: String;
     hired_at: Date;
-    state: Number;
+    task: Task;
     life_status: Boolean;
     revenue: Number;
 }
@@ -18,12 +19,12 @@ interface MemberModel extends mongoose.Model<IMember> {
     generateName(): string;
 }
 
-const MemberSchema = new mongoose.Schema({
+export const MemberSchema = new mongoose.Schema({
     clan_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Clan', required: true },
     name: { type: String, required: true },
     type: { type: String, enum: MemberTypes, default: MemberTypes.Warrior },
     hired_at: { type: Date, default: Date.now },
-    state: { type: String, enum: MemberState, default: MemberState.Idle},
+    task: { type: Object, default: new Task(0)},
     life_status: { type: Boolean, default: true },
     revenue: { type: Number, default: 0 }
 });
@@ -77,6 +78,27 @@ MemberSchema.methods.removefromRelatedClan = async function () {
 
 MemberSchema.methods.kill = async function () {
     this.life_status = false;
+};
+
+MemberSchema.methods.changeTask = async function (taskNumber: number): Promise<boolean> {
+    this.task.setTask(taskNumber);
+    await this.save();
+    return true;
+};
+
+MemberSchema.methods.cashRevenue = async function (): Promise<boolean> {
+    const revenue = this.task.goldRevenue;
+    this.revenue += revenue;
+    const clan = await Clan.findById(this.clan_id);
+
+    if(clan){
+        clan.gold += this.revenue;
+        await clan.save();
+        await this.save();
+        return true;
+    }
+
+    return false;
 };
 
 export const Member = mongoose.model<IMember, MemberModel>('Member', MemberSchema);

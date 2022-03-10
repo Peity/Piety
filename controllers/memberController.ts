@@ -3,6 +3,7 @@ import { Clan } from "../models/clan";
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { IController, ControllerHelper } from "./controller";
+import { Task } from '../models/task';
 
 export class MemberController extends ControllerHelper implements IController {
     relatedModel:  mongoose.Model<any>;
@@ -70,6 +71,36 @@ export class MemberController extends ControllerHelper implements IController {
         }
         await member.removefromRelatedClan();
         await member.delete();
+        this.success(res);
+    }
+
+
+    async calculateRevenue(id: string, res: Response): Promise<void> {
+
+        const member = await Member.findById(id);
+
+        if (!member){
+            return this.notFound(res);
+        }
+
+        const revenue = member.task.getGoldRevenue();
+
+        await member.save();
+
+        res.send(`Current revenue of member "${member.id} : ${member.name}" is ${revenue} gold`);
+    }
+
+    async changeTask (id: string, task: number, res: Response): Promise<void> {
+
+        const member = await this.relatedModel.findById(id);
+
+        if (!member){
+            return this.notFound(res);
+        }
+
+        member.changeTask(task);
+        await member.save();
+
         this.success(res);
     }
     
