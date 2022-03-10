@@ -66,7 +66,7 @@ export class Task {
             const timePast = Math.floor((now.getTime() - this.lastGoldCashedTime.getTime()) / 1000);
 
             const currentRevenue = Math.floor(timePast / 10);
-            if (currentRevenue > 1) {
+            if (currentRevenue >= 1) {
                 this.lastGoldCashedTime = new Date(Date.now());
                 return currentRevenue;
             }
