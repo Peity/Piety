@@ -19,7 +19,7 @@ interface MemberModel extends mongoose.Model<IMember> {
     generateName(): string;
 }
 
-export const MemberSchema = new mongoose.Schema({
+const MemberSchema = new mongoose.Schema({
     clan_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Clan', required: true },
     name: { type: String, required: true },
     type: { type: String, enum: MemberTypes, default: MemberTypes.Warrior },

@@ -83,8 +83,11 @@ export class MemberController extends ControllerHelper implements IController {
             return this.notFound(res);
         }
 
-        const revenue = member.task.getGoldRevenue();
+        let task: Task = new Task(0);
+        task.clone(member.task);
+        const revenue = task.getGoldRevenue();
 
+        member.task = task;
         await member.save();
 
         res.send(`Current revenue of member "${member.id} : ${member.name}" is ${revenue} gold`);

@@ -1,4 +1,3 @@
-import { MemberSchema } from "./members";
 import { TaskName, TaskState } from "../helper/enums";
 
 export class Task{
@@ -12,19 +11,19 @@ export class Task{
     constructor(taskType: number) {
         this.taskType = taskType;
         this.taskName = ``;
-        this.translateTaskTyoe();
+        this.translateTaskType();
         this.startTime = new Date(Date.now());
         this.taskStatus = TaskState.InProgress;
     }
 
     setTask(taskType: number) {
         this.taskType = taskType;
-        this.translateTaskTyoe();
+        this.translateTaskType();
         this.startTime = new Date(Date.now());
         this.taskStatus = TaskState.InProgress;
     }
 
-    translateTaskTyoe(): void{
+    translateTaskType(): void{
         switch(this.taskType) {
             case 0: {
                 this.taskName = TaskName.Idle;
@@ -81,6 +80,15 @@ export class Task{
         this.goldRevenue = 0;
 
         return cashed;
+    }
+
+    clone(task: Task){
+        this.taskName = task.taskName;
+        this.translateTaskType();
+        this.startTime = task.startTime;
+        this.taskStatus = task.taskName;
+        this.goldRevenue = task.goldRevenue;
+        this.supplyRevenue = task.supplyRevenue;
     }
 
 }
