@@ -88,6 +88,7 @@ export class MemberController extends ControllerHelper implements IController {
         const revenue = task.getGoldRevenue();
 
         member.task = task;
+        
         await member.save();
 
         res.send(`Current revenue of member "${member.id} : ${member.name}" is ${revenue} gold`);
@@ -102,7 +103,6 @@ export class MemberController extends ControllerHelper implements IController {
         }
 
         member.changeTask(task);
-        await member.save();
 
         this.success(res);
     }

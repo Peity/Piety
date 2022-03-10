@@ -1,18 +1,20 @@
 import { TaskName, TaskState } from "../helper/enums";
 
-export class Task{
+export class Task {
     private taskType: number;
     taskName: string;
     startTime: Date;
     taskStatus: string;
     goldRevenue: number = 0;
     supplyRevenue: number = 0;
+    lastGoldCashedTime: Date;
 
     constructor(taskType: number) {
         this.taskType = taskType;
         this.taskName = ``;
         this.translateTaskType();
         this.startTime = new Date(Date.now());
+        this.lastGoldCashedTime = new Date(Date.now());
         this.taskStatus = TaskState.InProgress;
     }
 
@@ -20,11 +22,12 @@ export class Task{
         this.taskType = taskType;
         this.translateTaskType();
         this.startTime = new Date(Date.now());
+        this.lastGoldCashedTime = new Date(Date.now());
         this.taskStatus = TaskState.InProgress;
     }
 
-    translateTaskType(): void{
-        switch(this.taskType) {
+    translateTaskType(): void {
+        switch (this.taskType) {
             case 0: {
                 this.taskName = TaskName.Idle;
                 break;
@@ -58,13 +61,15 @@ export class Task{
     }
 
     private calculateFarmingRevenue(): number {
-        if (this.taskName === TaskName.Farming) {
+        if (this.taskType === 1) {
             const now = new Date(Date.now());
-            const timePast = Math.abs((now.getTime() - this.startTime.getTime()) / 1000);
+            const timePast = Math.floor((now.getTime() - this.lastGoldCashedTime.getTime()) / 1000);
 
-            const currentRevenue = timePast / 10;
-
-            return currentRevenue;
+            const currentRevenue = Math.floor(timePast / 10);
+            if (currentRevenue > 1) {
+                this.lastGoldCashedTime = new Date(Date.now());
+                return currentRevenue;
+            }
         }
 
         return 0;
@@ -82,13 +87,14 @@ export class Task{
         return cashed;
     }
 
-    clone(task: Task){
-        this.taskName = task.taskName;
+    clone(task: Task) {
+        this.taskType = task.taskType;
         this.translateTaskType();
         this.startTime = task.startTime;
         this.taskStatus = task.taskName;
         this.goldRevenue = task.goldRevenue;
         this.supplyRevenue = task.supplyRevenue;
+        this.lastGoldCashedTime = task.lastGoldCashedTime;
     }
 
 }

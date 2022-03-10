@@ -81,15 +81,21 @@ MemberSchema.methods.kill = async function () {
 };
 
 MemberSchema.methods.changeTask = async function (taskNumber: number): Promise<boolean> {
-    this.task.setTask(taskNumber);
+    const task: Task = new Task(0);
+    task.clone(this.task);
+    task.setTask(taskNumber);
+    this.task = task;
     await this.save();
     return true;
 };
 
 MemberSchema.methods.cashRevenue = async function (): Promise<boolean> {
-    const revenue = this.task.goldRevenue;
+    const task: Task = new Task(0);
+    task.clone(this.task);
+    const revenue = task.goldRevenue;
     this.revenue += revenue;
     const clan = await Clan.findById(this.clan_id);
+    this.task = task;
 
     if(clan){
         clan.gold += this.revenue;
