@@ -81,6 +81,7 @@ export class Task {
     }
 
     cashRevenue(): number {
+        this.goldRevenue += this.calculateFarmingRevenue();
         const cashed = this.goldRevenue;
         this.goldRevenue = 0;
 

@@ -117,6 +117,11 @@ export class Api {
             memberController.calculateRevenue(req.params.id, res);
         });
 
+        // Cash Member Revenue
+        this.router.get("/member/:id/cash", async (req, res) => {
+            memberController.cashMember(req.params.id, res);
+        });
+
         this.router.get("/test", async (req, res) => {
 
         });
